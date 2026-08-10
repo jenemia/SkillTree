@@ -8,11 +8,11 @@ using SkillTree.Authoring.Runtime;
 
 namespace SkillTree.Authoring.Editor
 {
-    internal static class SkillTreeRuntimePrefabFactory
+    public static class SkillTreeRuntimePrefabFactory
     {
-        internal const string DefaultRuntimeNodePrefabPath = "Assets/Game/SkillTreeSamples/SkillTreeRuntimeNode.prefab";
+        public const string DefaultRuntimeNodePrefabPath = "Assets/Game/SkilTreeMaker/SkillTreeSamples/SkillTreeRuntimeNode.prefab";
 
-        internal static SkillTreeRuntimeNodeView EnsureDefaultNodePrefab()
+        public static SkillTreeRuntimeNodeView EnsureDefaultNodePrefab()
         {
             var existing = AssetDatabase.LoadAssetAtPath<SkillTreeRuntimeNodeView>(DefaultRuntimeNodePrefabPath);
             if (existing != null)
@@ -20,7 +20,7 @@ namespace SkillTree.Authoring.Editor
                 return existing;
             }
 
-            EnsureFolder("Assets/Game/SkillTreeSamples");
+            EnsureFolder("Assets/Game/SkilTreeMaker/SkillTreeSamples");
 
             var root = new GameObject("SkillTreeRuntimeNode", typeof(RectTransform), typeof(Image), typeof(Button));
             try
@@ -89,7 +89,7 @@ namespace SkillTree.Authoring.Editor
             return AssetDatabase.LoadAssetAtPath<SkillTreeRuntimeNodeView>(DefaultRuntimeNodePrefabPath);
         }
 
-        internal static SkillTreeRuntimeView CreateRuntimeViewPrefab(
+        public static SkillTreeRuntimeView CreateRuntimeViewPrefab(
             string assetPath,
             SkillTreeGraphData graph,
             SkillNodeMetadataProviderAsset metadataProvider,
