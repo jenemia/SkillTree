@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ccdb3689ae34ccaa4bca371fb171b8f, type: 3}
+  m_Name: ScriptableObjectSkillCatalog
+  m_EditorClassIdentifier: SkillTree.Samples.Runtime::SkillTree.Authoring.Samples.SampleSkillCatalogAsset
+  treeId: scriptableobject_catalog_sample
+  skills:
+  - skillId: root
+    displayName: Root Focus
+    description: Entry skill that unlocks the two primary branches.
+    effectSummary: Unlocks the skill tree and grants the first passive bonus.
+    cost: 3
+    maxLevel: 1
+    icon: {fileID: 0}
+  - skillId: childA
+    displayName: Branch Alpha
+    description: A first-tier branch that can unlock a deeper follow-up skill.
+    effectSummary: Improves offense and opens the grandchild upgrade.
+    cost: 5
+    maxLevel: 2
+    icon: {fileID: 0}
+  - skillId: childB
+    displayName: Branch Beta
+    description: A side branch that becomes available once the root is unlocked.
+    effectSummary: Improves utility with a separate upgrade path.
+    cost: 4
+    maxLevel: 2
+    icon: {fileID: 0}
+  - skillId: grandchild
+    displayName: Deep Specialization
+    description: A second-tier skill that depends on Branch Alpha.
+    effectSummary: Grants the strongest bonus in this sample tree.
+    cost: 8
+    maxLevel: 1
+    icon: {fileID: 0}

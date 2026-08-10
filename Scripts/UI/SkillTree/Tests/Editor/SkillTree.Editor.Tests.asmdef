@@ -1,0 +1,24 @@
+{
+  "name": "SkillTree.Editor.Tests",
+  "rootNamespace": "SkillTree.Authoring.Tests",
+  "references": [
+    "SkillTree.Runtime",
+    "SkillTree.Editor",
+    "SkillTree.Samples.Runtime",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

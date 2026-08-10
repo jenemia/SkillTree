@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 4,
+  "treeId": "scriptableobject_catalog_sample",
+  "editorBindings": {
+    "metadataProviderAssetPath": "Assets/Game/SkillTreeSamples/ScriptableObjectCatalog/ScriptableObjectSkillCatalogProvider.asset",
+    "metadataProviderAssetGuid": "93c2ed38841c4f4ea601b584093c08d1"
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "parentLineType": 0,
+      "position": {
+        "x": 120.0,
+        "y": 120.0
+      }
+    },
+    {
+      "id": "childA",
+      "parentId": "root",
+      "parentLineType": 0,
+      "position": {
+        "x": 440.0,
+        "y": 120.0
+      }
+    },
+    {
+      "id": "childB",
+      "parentId": "root",
+      "parentLineType": 1,
+      "position": {
+        "x": 440.0,
+        "y": 340.0
+      }
+    },
+    {
+      "id": "grandchild",
+      "parentId": "childA",
+      "parentLineType": 0,
+      "position": {
+        "x": 760.0,
+        "y": 120.0
+      }
+    }
+  ]
+}

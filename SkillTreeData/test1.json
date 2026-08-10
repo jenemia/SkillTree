@@ -1,0 +1,46 @@
+{
+    "schemaVersion": 2,
+    "treeId": "skill_tree",
+    "nodes": [
+        {
+            "id": "node_001",
+            "parentId": "",
+            "position": {
+                "x": 120.0,
+                "y": 120.0
+            }
+        },
+        {
+            "id": "node_002",
+            "parentId": "node_001",
+            "position": {
+                "x": 500.44647216796877,
+                "y": 359.9951477050781
+            }
+        },
+        {
+            "id": "node_003",
+            "parentId": "node_001",
+            "position": {
+                "x": 86.22482299804688,
+                "y": 376.6777648925781
+            }
+        },
+        {
+            "id": "node_004",
+            "parentId": "node_003",
+            "position": {
+                "x": 20.0,
+                "y": 632.2501220703125
+            }
+        },
+        {
+            "id": "node_005",
+            "parentId": "node_003",
+            "position": {
+                "x": 317.18670654296877,
+                "y": 636.2386474609375
+            }
+        }
+    ]
+}

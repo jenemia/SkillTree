@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "treeId": "scriptableobject_catalog_sample",
+  "selectedSkillId": "childA",
+  "currencyBalance": 9,
+  "userSkills": [
+    {
+      "skillId": "root",
+      "level": 1,
+      "isUnlocked": true
+    },
+    {
+      "skillId": "childA",
+      "level": 0,
+      "isUnlocked": false
+    },
+    {
+      "skillId": "childB",
+      "level": 0,
+      "isUnlocked": false
+    },
+    {
+      "skillId": "grandchild",
+      "level": 0,
+      "isUnlocked": false
+    }
+  ]
+}
