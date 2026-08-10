@@ -35,18 +35,25 @@ namespace SkillTree.Authoring.Tests
         [TearDown]
         public void TearDown()
         {
-            if (_window == null)
+            if (_window != null)
             {
-                return;
+                _window.Close();
+                UnityEngine.Object.DestroyImmediate(_window);
+                _window = null;
             }
 
-            _window.Close();
-            UnityEngine.Object.DestroyImmediate(_window);
-            _window = null;
-
-            if (AssetDatabase.IsValidFolder(_assetFolderPath))
+            // 창이 테스트 도중 먼저 닫혀도 생성된 프로젝트 에셋은 항상 정리한다.
+            if (!string.IsNullOrWhiteSpace(_assetFolderPath) && AssetDatabase.IsValidFolder(_assetFolderPath))
             {
                 AssetDatabase.DeleteAsset(_assetFolderPath);
+            }
+            else if (!string.IsNullOrWhiteSpace(_assetFolderPath))
+            {
+                // JSON만 직접 기록된 경우 AssetDatabase가 아직 폴더를 인식하지 못할 수 있다.
+                var absoluteFolderPath = Path.GetFullPath(_assetFolderPath);
+                if (Directory.Exists(absoluteFolderPath)) Directory.Delete(absoluteFolderPath, true);
+                if (File.Exists(absoluteFolderPath + ".meta")) File.Delete(absoluteFolderPath + ".meta");
+                AssetDatabase.Refresh();
             }
         }
 
