@@ -158,6 +158,25 @@ namespace SkillTree.Authoring.Tests
             UnityEngine.Object.DestroyImmediate(provider);
         }
 
+        [Test]
+        public void TryUpgradePreservesUnsignedBalancesAboveIntMaxValue()
+        {
+            // 큰 재화도 int 범위로 잘리지 않고 정확히 차감되어야 한다.
+            var graph = CreateGraph();
+            var provider = CreateProvider();
+            const uint balance = (uint)int.MaxValue + 100u;
+
+            var result = SkillTreeProgressionService.TryUpgrade(
+                graph,
+                provider,
+                new SkillTreeSnapshot { currencyBalance = balance },
+                "root");
+
+            Assert.That(result.status, Is.EqualTo(SkillUpgradeResultStatus.Success));
+            Assert.That(result.updatedSnapshot.currencyBalance, Is.EqualTo(balance - 3u));
+            UnityEngine.Object.DestroyImmediate(provider);
+        }
+
         // 테스트용 최소 그래프를 만든다.
         private static SkillTreeGraphData CreateGraph()
         {

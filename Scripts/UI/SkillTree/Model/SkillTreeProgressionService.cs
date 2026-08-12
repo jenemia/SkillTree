@@ -104,7 +104,7 @@ namespace SkillTree.Authoring
                 var cost = Math.Max(0, definition.cost);
                 var isUnlocked = state.isUnlocked || currentLevel > 0;
                 var isMaxed = currentLevel >= maxLevel;
-                var isAffordable = normalizedSnapshot.currencyBalance >= cost;
+                var isAffordable = normalizedSnapshot.currencyBalance >= (uint)cost;
                 var progressState = isLocked
                     ? SkillNodeProgressState.Locked
                     : isMaxed
@@ -193,7 +193,7 @@ namespace SkillTree.Authoring
                 .First(state => string.Equals(state.skillId, selectedStatus.skillId, StringComparison.Ordinal));
             upgradedState.level += 1;
             upgradedState.isUnlocked = true;
-            upgradedSnapshot.currencyBalance = Math.Max(0, upgradedSnapshot.currencyBalance - selectedStatus.cost);
+            upgradedSnapshot.currencyBalance -= (uint)selectedStatus.cost;
             upgradedSnapshot.selectedSkillId = selectedStatus.skillId;
 
             var resolvedAfterUpgrade = Resolve(graph, provider, upgradedSnapshot);
@@ -300,14 +300,14 @@ namespace SkillTree.Authoring
         }
 
         // 비용 문구는 재화 부족 여부를 빠르게 읽을 수 있게 만든다.
-        private static string BuildAffordabilitySummary(int cost, int currencyBalance, bool isAffordable)
+        private static string BuildAffordabilitySummary(int cost, uint currencyBalance, bool isAffordable)
         {
             if (isAffordable)
             {
                 return "Affordable";
             }
 
-            return $"Need {Math.Max(0, cost - currencyBalance)} more";
+            return $"Need {(uint)cost - currencyBalance} more";
         }
 
         // 업그레이드 실패 응답도 동일한 스냅샷/해석 결과 형태를 유지한다.
@@ -336,7 +336,7 @@ namespace SkillTree.Authoring
                     : snapshot.schemaVersion,
                 treeId = string.IsNullOrWhiteSpace(snapshot.treeId) ? "skill_tree" : snapshot.treeId.Trim(),
                 selectedSkillId = string.IsNullOrWhiteSpace(snapshot.selectedSkillId) ? null : snapshot.selectedSkillId.Trim(),
-                currencyBalance = Math.Max(0, snapshot.currencyBalance),
+                currencyBalance = snapshot.currencyBalance,
                 userSkills = snapshot.userSkills?
                     .Where(state => state != null)
                     .Select(CloneState)

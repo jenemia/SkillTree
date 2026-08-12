@@ -32,7 +32,7 @@ namespace SkillTree.Authoring
         public int schemaVersion = CurrentSchemaVersion;
         public string treeId = "skill_tree";
         public string selectedSkillId;
-        public int currencyBalance;
+        public uint currencyBalance;
         public List<UserSkillState> userSkills = new();
     }
 
@@ -74,7 +74,7 @@ namespace SkillTree.Authoring
     {
         public string treeId;
         public string selectedSkillId;
-        public int currencyBalance;
+        public uint currencyBalance;
         public List<UserSkillData> userSkills = new();
         public List<SkillStatusData> skillStatuses = new();
     }
