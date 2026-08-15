@@ -40,7 +40,7 @@ namespace SkillTree.Authoring.Runtime
 
             if (levelText != null)
             {
-                levelText.text = $"0/{Mathf.Max(0, definition?.maxLevel ?? 0)}";
+                levelText.text = $"Level 0/{Mathf.Max(0, definition?.maxLevel ?? 0)}";
             }
 
             if (iconImage != null)
