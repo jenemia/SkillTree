@@ -80,7 +80,7 @@ namespace SkillTree.Authoring.Runtime
             // 유저 진행 상태를 별도로 반영해 레벨/잠금/선택 표현을 갱신한다.
             BindDefinition(userSkill?.definition?.skillId ?? NodeId, userSkill?.definition);
             OnStatusBound(userSkill, status);
-            SetInteractionEnabled(true);
+            SetInteractionEnabled(status?.isPurchasable ?? true);
             ApplySelection(isSelected);
         }
 

@@ -72,6 +72,9 @@ namespace SkillTree.Authoring
 
                 node.id ??= string.Empty;
                 node.parentId = string.IsNullOrWhiteSpace(node.parentId) ? null : node.parentId.Trim();
+                node.nodeKind = Enum.IsDefined(typeof(SkillTreeNodeKind), node.nodeKind)
+                    ? node.nodeKind
+                    : SkillTreeNodeKind.Skill;
                 node.parentLineType = Enum.IsDefined(typeof(SkillTreeConnectionLineType), node.parentLineType)
                     ? node.parentLineType
                     : SkillTreeConnectionLineType.Curved;

@@ -55,6 +55,42 @@ namespace SkillTree.Authoring.Runtime
         /// <summary>잠김/활성 상태와 비용·레벨 레이블을 갱신합니다.</summary>
         protected override void OnStatusBound(UserSkillData userSkill, SkillStatusData status)
         {
+            if (status != null && !status.isPurchasable)
+            {
+                if (iconImage != null)
+                {
+                    iconImage.enabled = false;
+                }
+
+                if (nameText != null)
+                {
+                    nameText.gameObject.SetActive(false);
+                }
+
+                if (costText != null)
+                {
+                    costText.gameObject.SetActive(false);
+                }
+
+                if (levelText != null)
+                {
+                    levelText.gameObject.SetActive(false);
+                }
+
+                SetSkillState(false);
+                return;
+            }
+
+            if (nameText != null)
+            {
+                nameText.gameObject.SetActive(true);
+            }
+
+            if (levelText != null)
+            {
+                levelText.gameObject.SetActive(true);
+            }
+
             // 스킬 상태는 잠김 또는 활성 오브젝트 중 하나만 켜서 표시한다.
             var isLocked = status?.isLocked ?? false;
             SetSkillState(isLocked);

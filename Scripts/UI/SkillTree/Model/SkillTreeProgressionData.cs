@@ -56,6 +56,7 @@ namespace SkillTree.Authoring
     public sealed class SkillStatusData
     {
         public string skillId;
+        public bool isPurchasable = true;
         public SkillNodeProgressState progressState;
         public bool isLocked;
         public bool isUnlocked;

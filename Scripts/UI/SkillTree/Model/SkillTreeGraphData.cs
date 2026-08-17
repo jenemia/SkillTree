@@ -10,10 +10,16 @@ namespace SkillTree.Authoring
         Straight = 1
     }
 
+    public enum SkillTreeNodeKind
+    {
+        Skill = 0,
+        Hub = 1
+    }
+
     [Serializable]
     public sealed class SkillTreeGraphData
     {
-        public const int CurrentSchemaVersion = 4;
+        public const int CurrentSchemaVersion = 5;
 
         public int schemaVersion = CurrentSchemaVersion;
         public string treeId = "skill_tree";
@@ -33,6 +39,7 @@ namespace SkillTree.Authoring
     {
         public string id;
         public string parentId;
+        public SkillTreeNodeKind nodeKind = SkillTreeNodeKind.Skill;
         public SkillTreeConnectionLineType parentLineType = SkillTreeConnectionLineType.Curved;
         public Vector2 position = new(100f, 100f);
     }

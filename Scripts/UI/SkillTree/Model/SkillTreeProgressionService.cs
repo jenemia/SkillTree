@@ -16,7 +16,7 @@ namespace SkillTree.Authoring
             var normalizedSnapshot = CloneSnapshot(snapshot);
             var knownNodeIds = new HashSet<string>(
                 normalizedGraph.nodes
-                    .Where(node => node != null && !string.IsNullOrWhiteSpace(node.id))
+                    .Where(node => node != null && node.nodeKind != SkillTreeNodeKind.Hub && !string.IsNullOrWhiteSpace(node.id))
                     .Select(node => node.id),
                 StringComparer.Ordinal);
 
@@ -39,7 +39,7 @@ namespace SkillTree.Authoring
             }
 
             normalizedSnapshot.userSkills = normalizedGraph.nodes
-                .Where(node => node != null && !string.IsNullOrWhiteSpace(node.id))
+                .Where(node => node != null && node.nodeKind != SkillTreeNodeKind.Hub && !string.IsNullOrWhiteSpace(node.id))
                 .Select(node =>
                 {
                     if (stateById.TryGetValue(node.id, out var existingState))
@@ -60,8 +60,9 @@ namespace SkillTree.Authoring
                 !knownNodeIds.Contains(normalizedSnapshot.selectedSkillId))
             {
                 normalizedSnapshot.selectedSkillId = normalizedGraph.nodes
-                    .FirstOrDefault(node => node != null && string.IsNullOrWhiteSpace(node.parentId))?.id ??
-                    normalizedGraph.nodes.FirstOrDefault(node => node != null)?.id;
+                    .FirstOrDefault(node => node != null && node.nodeKind != SkillTreeNodeKind.Hub &&
+                        string.IsNullOrWhiteSpace(node.parentId))?.id ??
+                    normalizedGraph.nodes.FirstOrDefault(node => node != null && node.nodeKind != SkillTreeNodeKind.Hub)?.id;
             }
             else
             {
@@ -96,16 +97,21 @@ namespace SkillTree.Authoring
                 }
 
                 var definition = definitionsById[node.id];
-                var state = CloneState(statesById[node.id]);
+                var state = node.nodeKind == SkillTreeNodeKind.Hub
+                    ? new UserSkillState { skillId = node.id, level = 0, isUnlocked = true }
+                    : CloneState(statesById[node.id]);
                 var parentReady = IsParentRequirementSatisfied(node.parentId, normalizedGraph, statesById);
-                var isLocked = !parentReady;
+                var isHub = node.nodeKind == SkillTreeNodeKind.Hub;
+                var isLocked = !isHub && !parentReady;
                 var currentLevel = Math.Max(0, state.level);
-                var maxLevel = Math.Max(1, definition.maxLevel);
+                var maxLevel = isHub ? 0 : Math.Max(1, definition.maxLevel);
                 var cost = Math.Max(0, definition.cost);
-                var isUnlocked = state.isUnlocked || currentLevel > 0;
-                var isMaxed = currentLevel >= maxLevel;
+                var isUnlocked = isHub || state.isUnlocked || currentLevel > 0;
+                var isMaxed = !isHub && currentLevel >= maxLevel;
                 var isAffordable = normalizedSnapshot.currencyBalance >= (uint)cost;
-                var progressState = isLocked
+                var progressState = isHub
+                    ? SkillNodeProgressState.Open
+                    : isLocked
                     ? SkillNodeProgressState.Locked
                     : isMaxed
                         ? SkillNodeProgressState.Maxed
@@ -115,16 +121,17 @@ namespace SkillTree.Authoring
                 var status = new SkillStatusData
                 {
                     skillId = node.id,
+                    isPurchasable = !isHub,
                     progressState = progressState,
                     isLocked = isLocked,
                     isUnlocked = isUnlocked,
                     isAffordable = isAffordable,
                     isMaxed = isMaxed,
-                    canUpgrade = !isLocked && !isMaxed && isAffordable,
+                    canUpgrade = !isHub && !isLocked && !isMaxed && isAffordable,
                     currentLevel = currentLevel,
                     maxLevel = maxLevel,
                     cost = cost,
-                    prerequisiteSummary = BuildPrerequisiteSummary(node.parentId, definitionsById, parentReady),
+                    prerequisiteSummary = isHub ? string.Empty : BuildPrerequisiteSummary(node.parentId, definitionsById, parentReady),
                     affordabilitySummary = BuildAffordabilitySummary(cost, normalizedSnapshot.currencyBalance, isAffordable)
                 };
 
@@ -169,6 +176,11 @@ namespace SkillTree.Authoring
                 .FirstOrDefault(candidate => string.Equals(candidate.skillId, skillId?.Trim(), StringComparison.Ordinal));
 
             if (selectedStatus == null)
+            {
+                return CreateFailureResult(normalizedSnapshot, resolved, SkillUpgradeFailureReason.UnknownSkill);
+            }
+
+            if (!selectedStatus.isPurchasable)
             {
                 return CreateFailureResult(normalizedSnapshot, resolved, SkillUpgradeFailureReason.UnknownSkill);
             }
@@ -219,6 +231,21 @@ namespace SkillTree.Authoring
                     continue;
                 }
 
+                if (node.nodeKind == SkillTreeNodeKind.Hub)
+                {
+                    definitions[node.id] = new SkillDefinition
+                    {
+                        skillId = node.id,
+                        displayName = string.Empty,
+                        description = string.Empty,
+                        effectSummary = string.Empty,
+                        cost = 0,
+                        maxLevel = 0,
+                        icon = null
+                    };
+                    continue;
+                }
+
                 if (provider != null && provider.TryGetDefinition(node.id, out var resolvedDefinition) && resolvedDefinition != null)
                 {
                     definitions[node.id] = CloneDefinition(resolvedDefinition);
@@ -262,10 +289,17 @@ namespace SkillTree.Authoring
             var currentId = parentId;
             while (!string.IsNullOrWhiteSpace(currentId))
             {
-                if (!visited.Add(currentId) ||
-                    !statesById.TryGetValue(currentId, out var parentState) ||
-                    parentState.level < 1 ||
-                    !nodesById.TryGetValue(currentId, out var parentNode))
+                if (!visited.Add(currentId) || !nodesById.TryGetValue(currentId, out var parentNode))
+                {
+                    return false;
+                }
+
+                if (parentNode.nodeKind == SkillTreeNodeKind.Hub)
+                {
+                    return true;
+                }
+
+                if (!statesById.TryGetValue(currentId, out var parentState) || parentState.level < 1)
                 {
                     return false;
                 }
